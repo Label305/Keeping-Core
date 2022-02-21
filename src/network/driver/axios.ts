@@ -48,7 +48,7 @@ export async function getDefaultHeaders(credentials: Credentials | undefined, er
 }
 
 function isAxiosError(error: AxiosError | unknown): error is AxiosError {
-    return typeof error === 'object' && 'isAxiosError' in error && (error as AxiosError).isAxiosError;
+    return error !== null && typeof error === 'object' && 'isAxiosError' in error && (error as AxiosError).isAxiosError;
 }
 
 export function axiosErrorHandler(error: AxiosError | unknown, errorMessages: ErrorMessages) {

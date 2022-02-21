@@ -5,7 +5,7 @@ import {TimesheetTimes} from '../enums/timesheet_times';
 import {TimesheetEntry} from '../models/timesheet_entry';
 
 import {isSet} from './is_set';
-import {Time} from './time';
+import {diff, hours} from './time';
 
 export function entryFractialHours(entry: TimesheetEntry, type: TimesheetTimes, timeZone: string): number {
     //TODO, do we really want this? This is also how keeping.nl does it but keeping backend doesn't save seconds in the hour prop
@@ -14,7 +14,7 @@ export function entryFractialHours(entry: TimesheetEntry, type: TimesheetTimes, 
     }
 
     if (type === TimesheetTimes.TIMESHEET_TYPE_DAY_WITH_TIMES) {
-        return Time.diff(
+        return diff(
             isSet(entry.started_at) ? entry.started_at : '',
             isSet(entry.ended_at) ? entry.ended_at : null,
             timeZone,
@@ -23,7 +23,7 @@ export function entryFractialHours(entry: TimesheetEntry, type: TimesheetTimes, 
         return (
             (isSet(entry.hours_only_confirmed) ? entry.hours_only_confirmed : 0) +
             (entry.is_ongoing && isSet(entry.started_last_ongoing_at)
-                ? Time.diff(entry.started_last_ongoing_at, null, timeZone)
+                ? diff(entry.started_last_ongoing_at, null, timeZone)
                 : 0)
         );
     }
@@ -41,7 +41,7 @@ export function entryTime(
     if (frac > 1000) {
         return '-';
     }
-    return Time.hours(frac, fractionalFormat, numberFormat);
+    return hours(frac, fractionalFormat, numberFormat);
 }
 
 export function entriesTime(
@@ -60,5 +60,5 @@ export function entriesTime(
     if (totalHours > 1000) {
         return '-';
     }
-    return Time.hours(totalHours, fractionalFormat, numberFormat);
+    return hours(totalHours, fractionalFormat, numberFormat);
 }
