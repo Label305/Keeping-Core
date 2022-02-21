@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "emitDecoratorMetadata": false,
+        "experimentalDecorators": false,
+        "target": "es6",
+        "sourceMap": true,
+        "strict": true,
+        "jsx": "react",
+        "pretty": true,
+        "lib": ["dom", "es2017"]
+    },
+    "include": ["./src/**/*"],
+    "types": ["typePatches"]
+}
