@@ -1,6 +1,6 @@
 import {Organisation} from '../models/organisation';
 import {TimesheetEntry} from '../models/timesheet_entry';
-import {Axios, getDefaultHeaders, axiosErrorHandler} from './driver/axios';
+import {getDefaultHeaders, axiosErrorHandler, AxiosDriver} from './driver/axios';
 import {EntryReport} from '../models/entry_report';
 import {dateStr} from '../support/date';
 import {
@@ -11,7 +11,11 @@ import {Credentials} from '../models/credentials';
 import {ErrorMessages} from '../models/error_messages';
 
 export class ReportsApi {
-    constructor(private keepingApiUrl: string, private errorMessages: ErrorMessages) {}
+    constructor(
+        private axiosDriver: AxiosDriver,
+        private keepingApiUrl: string,
+        private errorMessages: ErrorMessages,
+    ) {}
 
     public async entriesReport(
         credentials: Credentials | undefined,
@@ -29,7 +33,7 @@ export class ReportsApi {
         const exrefs = [...new Set(externalIdentifiers)].join(',');
 
         try {
-            const response = await Axios.get<{entries: TimesheetEntry[]}>(
+            const response = await this.axiosDriver.get<{entries: TimesheetEntry[]}>(
                 `${this.keepingApiUrl}/organisations/${organisation.id}/entries-report`,
                 {
                     params: {
@@ -73,7 +77,7 @@ export class ReportsApi {
         const exrefs = [...new Set(externalIdentifiers)];
 
         try {
-            const response = await Axios.get<ApiExRefAndLastEntriesReport>(
+            const response = await this.axiosDriver.get<ApiExRefAndLastEntriesReport>(
                 `${this.keepingApiUrl}/organisations/${organisation.id}/combined-external-references-last-entries-report`,
                 {
                     params: {

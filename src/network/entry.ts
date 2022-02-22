@@ -5,13 +5,17 @@ import {
     TimesheetEntry,
     WorkTimesheetEntry,
 } from '../models/timesheet_entry';
-import {Axios, getDefaultHeaders, axiosErrorHandler} from './driver/axios';
+import {getDefaultHeaders, axiosErrorHandler, AxiosDriver} from './driver/axios';
 import {EntryPurpose} from '../enums/entry_purpose';
 import {Credentials} from '../models/credentials';
 import {ErrorMessages} from '../models/error_messages';
 
 export class EntryApi {
-    constructor(private keepingApiUrl: string, private errorMessages: ErrorMessages) {}
+    constructor(
+        private axiosDriver: AxiosDriver,
+        private keepingApiUrl: string,
+        private errorMessages: ErrorMessages,
+    ) {}
 
     public async fetchTimesheetForToday(
         organisation: Organisation,
@@ -20,9 +24,12 @@ export class EntryApi {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
         try {
-            const result = await Axios.get(`${this.keepingApiUrl}/users/${organisation.my_user_id}/entries`, {
-                headers: defaultHeaders,
-            });
+            const result = await this.axiosDriver.get(
+                `${this.keepingApiUrl}/users/${organisation.my_user_id}/entries`,
+                {
+                    headers: defaultHeaders,
+                },
+            );
             return result.data.entries as TimesheetEntry[];
         } catch (error) {
             throw axiosErrorHandler(error, this.errorMessages);
@@ -36,9 +43,12 @@ export class EntryApi {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
         try {
-            const result = await Axios.post(`${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries`, {
-                headers: defaultHeaders,
-            });
+            const result = await this.axiosDriver.post(
+                `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries`,
+                {
+                    headers: defaultHeaders,
+                },
+            );
             return result.data.entries as TimesheetEntry[];
         } catch (error) {
             throw axiosErrorHandler(error, this.errorMessages);
@@ -52,7 +62,7 @@ export class EntryApi {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
         try {
-            const result = await Axios.put(
+            const result = await this.axiosDriver.put(
                 `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}`,
                 timesheetToApiTimesheet(timesheetEntry),
                 {headers: defaultHeaders},
@@ -70,7 +80,7 @@ export class EntryApi {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
         try {
-            const result = await Axios.put(
+            const result = await this.axiosDriver.put(
                 `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}/stop`,
                 null,
                 {headers: defaultHeaders},
@@ -88,7 +98,7 @@ export class EntryApi {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
         try {
-            const result = await Axios.put(
+            const result = await this.axiosDriver.put(
                 `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}/resume`,
                 null,
                 {headers: defaultHeaders},
@@ -106,7 +116,7 @@ export class EntryApi {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
         try {
-            const result = await Axios.delete(
+            const result = await this.axiosDriver.delete(
                 `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}`,
                 {headers: defaultHeaders},
             );

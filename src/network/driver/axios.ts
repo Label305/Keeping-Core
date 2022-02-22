@@ -7,7 +7,9 @@ import {SocketsContainer} from '../../models/sockets_container';
 
 type AxiosUnauthorizedInterceptor = (error: AxiosError) => Promise<AxiosResponse<unknown>>;
 
-export function mountAxiosInterceptors(
+export type AxiosDriver = typeof AxiosInstance;
+
+export function initAxiosInstance(
     socketsContainer: SocketsContainer,
     AxiosUnauthorizedInterceptor: AxiosUnauthorizedInterceptor,
 ) {
@@ -29,6 +31,8 @@ export function mountAxiosInterceptors(
             resolve(value);
         });
     });
+
+    return AxiosInstance;
 }
 
 export async function getDefaultHeaders(credentials: Credentials | undefined, errorMessages: ErrorMessages) {
@@ -71,5 +75,3 @@ export function axiosErrorHandler(error: AxiosError | unknown, errorMessages: Er
 
     return error;
 }
-
-export const Axios = AxiosInstance;
