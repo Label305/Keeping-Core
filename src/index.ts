@@ -1,19 +1,9 @@
-import * as ImportEnums from './enums';
-export const Enums = {
-    ...ImportEnums,
-};
+export * from './enums';
+export * from './models';
+export * from './network';
+export * from './support';
 
-import * as ImportModels from './models';
-export const Models = {
-    ...ImportModels,
-};
-
-import * as ImportNetwork from './network';
-export const Network = {
-    ...ImportNetwork,
-};
-
-import * as ImportSupport from './support';
-export const Support = {
-    ...ImportSupport,
-};
+// This syntax shoudl work but doesnt, it throws an error about extracting typescript types
+// https://github.com/parcel-bundler/parcel/issues/5911
+// else we could export everything scoped to their corresponding layer, e.g. Support.isSet or Network.authApi
+// export * as Support from './support';
