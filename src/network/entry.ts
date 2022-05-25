@@ -19,11 +19,14 @@ export class EntryApi {
         day: Date,
     ): Promise<TimesheetEntry[]> {
         const defaultHeaders = await getDefaultHeaders(credentials);
+        const date = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(
+            day.getDate(),
+        ).padStart(2, '0')}`;
 
         const result = await this.axiosDriver.get(`${this.keepingApiUrl}/users/${organisation.my_user_id}/entries`, {
             headers: defaultHeaders,
             params: {
-                date: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()}`,
+                date: date,
             },
         });
         return result.data.entries as TimesheetEntry[];
