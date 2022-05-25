@@ -1,5 +1,4 @@
 import Axios from 'axios';
-
 import {Credentials} from '../models/credentials';
 
 export class AuthApi {

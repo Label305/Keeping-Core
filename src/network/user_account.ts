@@ -1,7 +1,8 @@
-import {AxiosDriver, getDefaultHeaders, axiosErrorHandler} from './driver/axios';
-import {UserAccount} from '../models/user_account';
+import {AxiosDriver, axiosErrorHandler, getDefaultHeaders} from './driver/axios';
+
 import {Credentials} from '../models/credentials';
 import {ErrorMessages} from '../models/error_messages';
+import {UserAccount} from '../models/user_account';
 
 export class UserAccountApi {
     constructor(
@@ -10,7 +11,7 @@ export class UserAccountApi {
         private errorMessages: ErrorMessages,
     ) {}
 
-    public async fetchMe(credentials: Credentials | undefined): Promise<UserAccount> {
+    public async fetchMe(credentials: Credentials): Promise<UserAccount> {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
         try {

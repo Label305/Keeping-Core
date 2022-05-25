@@ -3,7 +3,6 @@ import {DateTime, Settings} from 'luxon';
 import {FractionalFormat} from '../enums/fractional_format';
 import {NumberFormat} from '../enums/number_format';
 import {TimeFormat} from '../enums/time_format';
-
 import {isSet} from './is_set';
 
 Settings.defaultLocale = isSet(window.navigator.language) ? navigator.language : 'nl';

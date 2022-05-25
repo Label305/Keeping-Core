@@ -1,6 +1,8 @@
-import Echo from 'laravel-echo';
 import * as io from 'socket.io-client';
+
 import {Credentials, ErrorMessages, SocketsContainer} from '../models';
+
+import Echo from 'laravel-echo';
 import {UnauthenticatedError} from '../support';
 
 export async function activatePushMessaging(

@@ -1,14 +1,15 @@
-import {Organisation} from '../models/organisation';
+import {AxiosDriver, axiosErrorHandler, getDefaultHeaders} from './driver/axios';
 import {
     BreakTimesheetEntry,
     PartialTimesheetEntry,
     TimesheetEntry,
     WorkTimesheetEntry,
 } from '../models/timesheet_entry';
-import {getDefaultHeaders, axiosErrorHandler, AxiosDriver} from './driver/axios';
-import {EntryPurpose} from '../enums/entry_purpose';
+
 import {Credentials} from '../models/credentials';
+import {EntryPurpose} from '../enums/entry_purpose';
 import {ErrorMessages} from '../models/error_messages';
+import {Organisation} from '../models/organisation';
 
 export class EntryApi {
     constructor(
@@ -17,9 +18,10 @@ export class EntryApi {
         private errorMessages: ErrorMessages,
     ) {}
 
-    public async fetchTimesheetForToday(
+    public async fetchTimesheetForDay(
         organisation: Organisation,
-        credentials?: Credentials,
+        credentials: Credentials,
+        day: Date,
     ): Promise<TimesheetEntry[]> {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
@@ -28,6 +30,9 @@ export class EntryApi {
                 `${this.keepingApiUrl}/users/${organisation.my_user_id}/entries`,
                 {
                     headers: defaultHeaders,
+                    params: {
+                        date: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()}`,
+                    },
                 },
             );
             return result.data.entries as TimesheetEntry[];
@@ -38,7 +43,7 @@ export class EntryApi {
 
     public async saveTimesheetEntry(
         timesheetEntry: TimesheetEntry,
-        credentials?: Credentials,
+        credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
@@ -57,7 +62,7 @@ export class EntryApi {
 
     public async editTimesheetEntry(
         timesheetEntry: PartialTimesheetEntry,
-        credentials?: Credentials,
+        credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
@@ -75,7 +80,7 @@ export class EntryApi {
 
     public async stopTimesheetEntry(
         timesheetEntry: TimesheetEntry,
-        credentials?: Credentials,
+        credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
@@ -93,7 +98,7 @@ export class EntryApi {
 
     public async resumeTimesheetEntry(
         timesheetEntry: TimesheetEntry,
-        credentials?: Credentials,
+        credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 
@@ -111,7 +116,7 @@ export class EntryApi {
 
     public async deleteTimesheetEntry(
         timesheetEntry: TimesheetEntry,
-        credentials?: Credentials,
+        credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
         const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
 

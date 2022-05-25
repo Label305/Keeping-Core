@@ -1,14 +1,15 @@
-import {Organisation} from '../models/organisation';
-import {TimesheetEntry} from '../models/timesheet_entry';
-import {getDefaultHeaders, axiosErrorHandler, AxiosDriver} from './driver/axios';
-import {EntryReport} from '../models/entry_report';
-import {dateStr} from '../support/date';
 import {
     ApiExRefAndLastEntriesReport,
     ExRefAndLastEntriesReport,
 } from '../models/external_reference_and_last_entries_report';
+import {AxiosDriver, axiosErrorHandler, getDefaultHeaders} from './driver/axios';
+
 import {Credentials} from '../models/credentials';
+import {EntryReport} from '../models/entry_report';
 import {ErrorMessages} from '../models/error_messages';
+import {Organisation} from '../models/organisation';
+import {TimesheetEntry} from '../models/timesheet_entry';
+import {dateStr} from '../support/date';
 
 export class ReportsApi {
     constructor(
@@ -18,7 +19,7 @@ export class ReportsApi {
     ) {}
 
     public async entriesReport(
-        credentials: Credentials | undefined,
+        credentials: Credentials,
         organisation: Organisation,
         externalIdentifiers: readonly string[],
         userIds?: readonly number[],
@@ -62,7 +63,7 @@ export class ReportsApi {
     }
 
     public async exRefAndLastEntriesReport(
-        credentials: Credentials | undefined,
+        credentials: Credentials,
         organisation: Organisation,
         externalIdentifiers: readonly string[],
         userIds?: readonly number[],

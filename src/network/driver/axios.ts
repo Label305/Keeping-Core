@@ -1,9 +1,10 @@
 import AxiosInstance, {AxiosError, AxiosResponse} from 'axios';
-import {setTimeOffset} from '../../support/time';
-import {UnauthenticatedError} from '../../support/unauthenticated_error';
+
 import {Credentials} from '../../models/credentials';
 import {ErrorMessages} from '../../models/error_messages';
 import {SocketsContainer} from '../../models/sockets_container';
+import {UnauthenticatedError} from '../../support/unauthenticated_error';
+import {setTimeOffset} from '../../support/time';
 
 type AxiosUnauthorizedInterceptor = (error: AxiosError) => Promise<AxiosResponse<unknown>>;
 
@@ -36,7 +37,7 @@ export function initAxiosInstance(
 }
 
 export async function getDefaultHeaders(credentials: Credentials | undefined, errorMessages: ErrorMessages) {
-    if (credentials === undefined) {
+    if (credentials === undefined || credentials === null) {
         throw new UnauthenticatedError(
             errorMessages['flash.unauthorized']
                 ? errorMessages['flash.unauthorized']
