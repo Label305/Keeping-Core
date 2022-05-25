@@ -3,7 +3,6 @@ import AxiosInstance, {AxiosError, AxiosResponse} from 'axios';
 import {Credentials} from '../../models/credentials';
 import {ErrorMessages} from '../../models/error_messages';
 import {SocketsContainer} from '../../models/sockets_container';
-import {UnauthenticatedError} from '../../support/unauthenticated_error';
 import {setTimeOffset} from '../../support/time';
 
 type AxiosUnauthorizedInterceptor = (error: AxiosError) => Promise<AxiosResponse<unknown>>;
@@ -36,15 +35,7 @@ export function initAxiosInstance(
     return AxiosInstance;
 }
 
-export async function getDefaultHeaders(credentials: Credentials | undefined, errorMessages: ErrorMessages) {
-    if (credentials === undefined || credentials === null) {
-        throw new UnauthenticatedError(
-            errorMessages['flash.unauthorized']
-                ? errorMessages['flash.unauthorized']
-                : 'No credentials available, please login again.',
-        );
-    }
-
+export async function getDefaultHeaders(credentials: Credentials) {
     return {
         Authorization: 'Bearer ' + credentials.access_token,
         Accept: 'application/json',

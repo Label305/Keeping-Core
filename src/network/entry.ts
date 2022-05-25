@@ -1,4 +1,4 @@
-import {AxiosDriver, axiosErrorHandler, getDefaultHeaders} from './driver/axios';
+import {AxiosDriver, getDefaultHeaders} from './driver/axios';
 import {
     BreakTimesheetEntry,
     PartialTimesheetEntry,
@@ -8,127 +8,92 @@ import {
 
 import {Credentials} from '../models/credentials';
 import {EntryPurpose} from '../enums/entry_purpose';
-import {ErrorMessages} from '../models/error_messages';
 import {Organisation} from '../models/organisation';
 
 export class EntryApi {
-    constructor(
-        private axiosDriver: AxiosDriver,
-        private keepingApiUrl: string,
-        private errorMessages: ErrorMessages,
-    ) {}
+    constructor(private axiosDriver: AxiosDriver, private keepingApiUrl: string) {}
 
     public async fetchTimesheetForDay(
         organisation: Organisation,
         credentials: Credentials,
         day: Date,
     ): Promise<TimesheetEntry[]> {
-        const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
+        const defaultHeaders = await getDefaultHeaders(credentials);
 
-        try {
-            const result = await this.axiosDriver.get(
-                `${this.keepingApiUrl}/users/${organisation.my_user_id}/entries`,
-                {
-                    headers: defaultHeaders,
-                    params: {
-                        date: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()}`,
-                    },
-                },
-            );
-            return result.data.entries as TimesheetEntry[];
-        } catch (error) {
-            throw axiosErrorHandler(error, this.errorMessages);
-        }
+        const result = await this.axiosDriver.get(`${this.keepingApiUrl}/users/${organisation.my_user_id}/entries`, {
+            headers: defaultHeaders,
+            params: {
+                date: `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()}`,
+            },
+        });
+        return result.data.entries as TimesheetEntry[];
     }
 
     public async saveTimesheetEntry(
         timesheetEntry: TimesheetEntry,
         credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
-        const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
+        const defaultHeaders = await getDefaultHeaders(credentials);
 
-        try {
-            const result = await this.axiosDriver.post(
-                `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries`,
-                {
-                    headers: defaultHeaders,
-                },
-            );
-            return result.data.entries as TimesheetEntry[];
-        } catch (error) {
-            throw axiosErrorHandler(error, this.errorMessages);
-        }
+        const result = await this.axiosDriver.post(`${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries`, {
+            headers: defaultHeaders,
+        });
+        return result.data.entries as TimesheetEntry[];
     }
 
     public async editTimesheetEntry(
         timesheetEntry: PartialTimesheetEntry,
         credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
-        const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
+        const defaultHeaders = await getDefaultHeaders(credentials);
 
-        try {
-            const result = await this.axiosDriver.put(
-                `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}`,
-                timesheetToApiTimesheet(timesheetEntry),
-                {headers: defaultHeaders},
-            );
-            return result.data.entries as TimesheetEntry[];
-        } catch (error) {
-            throw axiosErrorHandler(error, this.errorMessages);
-        }
+        const result = await this.axiosDriver.put(
+            `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}`,
+            timesheetToApiTimesheet(timesheetEntry),
+            {headers: defaultHeaders},
+        );
+        return result.data.entries as TimesheetEntry[];
     }
 
     public async stopTimesheetEntry(
         timesheetEntry: TimesheetEntry,
         credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
-        const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
+        const defaultHeaders = await getDefaultHeaders(credentials);
 
-        try {
-            const result = await this.axiosDriver.put(
-                `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}/stop`,
-                null,
-                {headers: defaultHeaders},
-            );
-            return result.data.entries as TimesheetEntry[];
-        } catch (error) {
-            throw axiosErrorHandler(error, this.errorMessages);
-        }
+        const result = await this.axiosDriver.put(
+            `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}/stop`,
+            null,
+            {headers: defaultHeaders},
+        );
+        return result.data.entries as TimesheetEntry[];
     }
 
     public async resumeTimesheetEntry(
         timesheetEntry: TimesheetEntry,
         credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
-        const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
+        const defaultHeaders = await getDefaultHeaders(credentials);
 
-        try {
-            const result = await this.axiosDriver.put(
-                `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}/resume`,
-                null,
-                {headers: defaultHeaders},
-            );
-            return result.data.entries as TimesheetEntry[];
-        } catch (error) {
-            throw axiosErrorHandler(error, this.errorMessages);
-        }
+        const result = await this.axiosDriver.put(
+            `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}/resume`,
+            null,
+            {headers: defaultHeaders},
+        );
+        return result.data.entries as TimesheetEntry[];
     }
 
     public async deleteTimesheetEntry(
         timesheetEntry: TimesheetEntry,
         credentials: Credentials,
     ): Promise<TimesheetEntry[]> {
-        const defaultHeaders = await getDefaultHeaders(credentials, this.errorMessages);
+        const defaultHeaders = await getDefaultHeaders(credentials);
 
-        try {
-            const result = await this.axiosDriver.delete(
-                `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}`,
-                {headers: defaultHeaders},
-            );
-            return result.data.entries as TimesheetEntry[];
-        } catch (error) {
-            throw axiosErrorHandler(error, this.errorMessages);
-        }
+        const result = await this.axiosDriver.delete(
+            `${this.keepingApiUrl}/users/${timesheetEntry.user_id}/entries/${timesheetEntry.id}`,
+            {headers: defaultHeaders},
+        );
+        return result.data.entries as TimesheetEntry[];
     }
 }
 
